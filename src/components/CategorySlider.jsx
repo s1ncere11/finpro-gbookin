@@ -9,6 +9,8 @@ export default function PromoSlider() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFirst, setIsFirst] = useState(true);
+  const [isLast, setIsLast] = useState(false);
 
   const [sliderRef, instanceRef] = useKeenSlider({
     breakpoints: {
@@ -23,24 +25,55 @@ export default function PromoSlider() {
       perView: 3,
       spacing: 15,
     },
+    slideChanged(slider) {
+      setIsFirst(slider.track.details.rel === 0);
+      const lastVisible =
+        slider.track.details.rel + slider.options.slides.perView >=
+        slider.track.details.slides.length;
+      setIsLast(lastVisible);
+    },
   });
 
   useEffect(() => {
-    async function fetchCategories() {
+    async function fetchFilteredCategories() {
       try {
-        const res = await fetch(
-          "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/categories",
-          {
-            headers: {
-              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
-            },
-          }
+        const [categoriesRes, activitiesRes] = await Promise.all([
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/categories",
+            {
+              headers: {
+                apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+              },
+            }
+          ),
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/activities",
+            {
+              headers: {
+                apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+              },
+            }
+          ),
+        ]);
+
+        if (!categoriesRes.ok || !activitiesRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const categoriesData = await categoriesRes.json();
+        const activitiesData = await activitiesRes.json();
+
+        // Ambil semua categoryId dari aktivitas
+        const validCategoryIds = new Set(
+          activitiesData.data.map((act) => act.categoryId)
         );
 
-        if (!res.ok) throw new Error("Failed to fetch categories");
+        // Filter kategori yang ada activity-nya
+        const filtered = categoriesData.data.filter((cat) =>
+          validCategoryIds.has(cat.id)
+        );
 
-        const data = await res.json();
-        setCategories(data.data || []);
+        setCategories(filtered);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -48,7 +81,7 @@ export default function PromoSlider() {
       }
     }
 
-    fetchCategories();
+    fetchFilteredCategories();
   }, []);
 
   const handleNext = () => instanceRef.current?.next();
@@ -58,65 +91,67 @@ export default function PromoSlider() {
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <div className="container mx-auto mt-10 px-4">
+    <div
+      className="relative w-full py-10 px-4 mt-10 rounded-xl overflow-hidden bg-slate-100"
+      style={{
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        boxShadow: "0px 3px 6px rgba(255, 0, 255, 0.4)",
+      }}
+    >
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-        <h2 className="text-xl sm:text-2xl font-bold">
-          Keliling dunia penuh diskon dan promo menarik!
+        <h2 className="text-xl sm:text-2xl font-bold text-sky-900">
+          Jelajahi Dunia Lewat Berbagai Kategori Perjalanan!
         </h2>
         <a
-          href="#"
-          className="text-blue-600 font-semibold text-sm hover:underline"
+          href="/category"
+          className="text-sky-900 font-semibold text-sm hover:underline"
         >
-          Lihat semua →
+          Lihat semua Kategori →
         </a>
+        {/* <div className="absolute inset-0 bg-black/10 z-50 rounded-xl"></div> */}
       </div>
 
       <div className="relative">
         {/* Slider */}
         <div ref={sliderRef} className="keen-slider">
-          {categories.length > 0 ? (
-            categories.map((cat) => (
-              <div key={cat.id} className="keen-slider__slide rounded-2xl">
-                {cat.imageUrl ? (
-                  <div className="relative w-full h-[200px] sm:h-[240px] overflow-hidden rounded-xl group hover:cursor-pointer">
-                    <img
-                      src={cat.imageUrl}
-                      alt={cat.name}
-                      className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <h3 className="text-white text-base sm:text-xl font-semibold text-center px-2">
-                        {cat.name}
-                      </h3>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-[200px] sm:h-[240px] flex items-center justify-center bg-gray-200 rounded-xl">
-                    <span className="text-gray-500 text-sm">
-                      Tidak ada gambar
-                    </span>
-                  </div>
-                )}
+          {categories.map((cat) => (
+            <div key={cat.id} className="keen-slider__slide rounded-2xl">
+              <div className="relative w-full h-[200px] sm:h-[240px] overflow-hidden rounded-xl group hover:cursor-pointer">
+                <img
+                  src={cat.imageUrl || undefined}
+                  alt={cat.name}
+                  className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                />
+
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <h3 className="text-white text-base sm:text-xl font-semibold text-center px-2">
+                    {cat.name}
+                  </h3>
+                </div>
               </div>
-            ))
-          ) : (
-            <div className="text-center">Tidak ada data tersedia</div>
-          )}
+            </div>
+          ))}
         </div>
 
-        {/* Tombol Navigasi */}
-        <button
-          onClick={handlePrev}
-          className="absolute top-1/2 left-0 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 text-sm sm:text-base p-2 rounded-full text-fuchsia-700 border-2 border-fuchsia-700 hover:bg-fuchsia-700 hover:text-white bg-white shadow-md flex items-center justify-center z-10"
-        >
-          <FaArrowLeft />
-        </button>
-        <button
-          onClick={handleNext}
-          className="absolute top-1/2 right-0 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 text-sm sm:text-base p-2 rounded-full text-fuchsia-700 border-2 border-fuchsia-700 hover:bg-fuchsia-700 hover:text-white bg-white shadow-md flex items-center justify-center z-10"
-        >
-          <FaArrowRight />
-        </button>
+        {/*  Navigasi */}
+        {!isFirst && (
+          <button
+            onClick={handlePrev}
+            className="absolute top-1/2 left-0 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 p-2 rounded-full text-sky-700 border-2 border-sky-700 hover:bg-sky-700 hover:text-white bg-white shadow-md flex items-center justify-center z-10"
+          >
+            <FaArrowLeft />
+          </button>
+        )}
+
+        {!isLast && (
+          <button
+            onClick={handleNext}
+            className="absolute top-1/2 right-0 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 p-2 rounded-full text-sky-700 border-2 border-sky-700 hover:bg-sky-700 hover:text-white bg-white shadow-md flex items-center justify-center z-10"
+          >
+            <FaArrowRight />
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
-import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Promo from "@/components/Promo";
 
-export default function Promo() {
+export default function PromoPage() {
   return (
-    <div>
-      <h1 className="min-h-screen flex items-center justify-center font-bold text-3xl">
-        Promo Page
-      </h1>
-    </div>
+    <main className="mx-72 mt-24">
+      <Promo />
+      <Footer />
+    </main>
   );
 }

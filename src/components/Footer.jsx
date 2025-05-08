@@ -2,7 +2,7 @@ import { FaGithub, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-purple-900 to-fuchsia-800 text-white py-10 mx-4 mt-16">
+    <footer className="bg-gradient-to-r from-purple-900 to-fuchsia-800 text-white py-10  mt-16 rounded-sm">
       <div className="container mx-auto px-6 md:px-20 flex flex-col md:flex-row justify-between gap-12">
         <div>
           <h4 className="font-bold mb-4">Follow us on</h4>

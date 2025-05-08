@@ -6,28 +6,40 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PromoSlider from "./PromoSlider";
 import CategorySlider from "@/components/CategorySlider";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter(); // Hook untuk navigasi
   const [selectedLocation, setSelectedLocation] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [filteredActivities, setFilteredActivities] = useState([]);
   const [checkInDate, setCheckInDate] = useState(new Date());
   const [checkOutDate, setCheckOutDate] = useState(new Date());
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
     setSelectedLocation(inputValue);
-    const filtered = categories.filter((category) =>
-      category.name.toLowerCase().includes(inputValue.toLowerCase())
+
+    const filtered = activities.filter((activity) =>
+      activity.title.toLowerCase().includes(inputValue.toLowerCase())
     );
-    setFilteredCategories(filtered);
+
+    setFilteredActivities(filtered);
     setIsDropdownOpen(true);
+  };
+
+  const handleSearchSubmit = () => {
+    // Cek apakah ada input yang diisi
+    if (selectedLocation.trim()) {
+      // Mengarahkan ke halaman kategori dengan query parameter berdasarkan lokasi yang dipilih
+      router.push(`/category?search=${encodeURIComponent(selectedLocation)}`);
+    }
   };
 
   useEffect(() => {
     fetch(
-      "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/categories",
+      "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/activities",
       {
         headers: {
           apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
@@ -35,13 +47,13 @@ export default function HeroSection() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setCategories(data?.data || []));
+      .then((data) => setActivities(data?.data || []));
   }, []);
 
   return (
     <>
       <div
-        className="relative text-white rounded-3xl p-4 sm:p-6 md:p-10 overflow-hidden container mx-auto mt-5"
+        className="relative text-white rounded-3xl p-4 sm:p-6 md:p-10 overflow-hidden mt-5"
         style={{
           backgroundImage: "url('/bg-hero4.jpg')",
           backgroundSize: "cover",
@@ -76,18 +88,17 @@ export default function HeroSection() {
               />
             </div>
 
-            {isDropdownOpen && filteredCategories.length > 0 && (
+            {isDropdownOpen && filteredActivities.length > 0 && (
               <ul className="absolute z-10 bg-white mt-1 border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto w-full">
-                {filteredCategories.map((category) => (
+                {filteredActivities.map((activity) => (
                   <li
-                    key={category.id}
+                    key={activity.id}
                     onMouseDown={() => {
-                      setSelectedLocation(category.name);
-                      setIsDropdownOpen(false);
+                      router.push(`/activity/${activity.id}`);
                     }}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
                   >
-                    {category.name}
+                    {activity.title}
                   </li>
                 ))}
               </ul>
@@ -130,13 +141,16 @@ export default function HeroSection() {
           </div>
 
           {/* Button */}
-          <button className="w-full bg-fuchsia-700 hover:bg-gradient-to-r hover:cursor-pointer from-purple-700 to-fuchsia-600 text-white font-semibold text-base md:text-lg py-3 rounded-md shadow">
+          <button
+            onClick={handleSearchSubmit}
+            className="w-full bg-fuchsia-700 hover:bg-gradient-to-r hover:cursor-pointer from-purple-700 to-fuchsia-600 text-white font-semibold text-base md:text-lg py-3 rounded-md shadow"
+          >
             CARI
           </button>
         </div>
       </div>
-      <CategorySlider />
       <PromoSlider />
+      <CategorySlider />
     </>
   );
 }
