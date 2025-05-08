@@ -37,7 +37,7 @@ export default function ActivityDetail() {
 
   const router = useRouter();
 
-  const handleBookNow = () => {
+  const handleBookNow = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Silakan login terlebih dahulu.");
@@ -45,11 +45,32 @@ export default function ActivityDetail() {
       return;
     }
 
-    // Proses booking
-    console.log("Lanjut ke halaman booking atau proses lainnya.");
+    try {
+      const res = await fetch(
+        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/add-cart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            activityId: activity?.id,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Gagal menambahkan ke keranjang");
+
+      router.push("/cart");
+    } catch (error) {
+      alert("Terjadi kesalahan saat memproses pemesanan.");
+      console.error(error);
+    }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Silakan login terlebih dahulu.");
@@ -57,8 +78,29 @@ export default function ActivityDetail() {
       return;
     }
 
-    // Proses tambah ke keranjang
-    console.log("Lanjut ke proses add to cart.");
+    try {
+      const res = await fetch(
+        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/add-cart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            activityId: activity?.id,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Gagal menambahkan ke keranjang");
+
+      alert("Berhasil ditambahkan ke keranjang!");
+    } catch (error) {
+      alert("Terjadi kesalahan saat menambahkan ke keranjang.");
+      console.error(error);
+    }
   };
 
   useEffect(() => {

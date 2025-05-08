@@ -86,11 +86,17 @@ export default function PromosPage() {
             >
               {/* Gambar + Hover Effect */}
               <div className="relative h-48 w-full overflow-hidden">
-                <img
-                  src={promo.imageUrl}
-                  alt={promo.title}
-                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-                />
+                {promo.imageUrl ? (
+                  <img
+                    src={promo.imageUrl}
+                    alt={promo.title}
+                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                    No Image
+                  </div>
+                )}
 
                 {/* Badge Diskon */}
                 <span className="absolute top-3 left-3 bg-fuchsia-700 text-white text-xs font-bold px-3 py-1 rounded-full shadow">

@@ -1,145 +1,144 @@
+// app/dashboard/page.jsx
 "use client";
 
-import {
-  LayoutDashboard,
-  Image,
-  Tag,
-  MapPin,
-  ShoppingCart,
-  Users,
-  Settings,
-  Info,
-  ChevronRight,
-  ChevronDown,
-} from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function AdminDashboardPage() {
-  const [menuOpen, setMenuOpen] = useState(true);
+export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    banners: 0,
+    promos: 0,
+    categories: 0,
+    activities: 0,
+    transactions: 0,
+    pending: 0,
+    users: 0,
+    admins: 0,
+  });
+
+  const TOKEN = process.env.NEXT_PUBLIC_TOKEN;
+  const API_KEY = "24405e01-fbc1-45a5-9f5a-be13afcd757c";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const headers = {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+          apiKey: API_KEY,
+        };
+
+        const [
+          bannersRes,
+          promosRes,
+          categoriesRes,
+          activitiesRes,
+          transactionsRes,
+          usersRes,
+        ] = await Promise.all([
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/banners",
+            { headers }
+          ),
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/promos",
+            { headers }
+          ),
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/categories",
+            { headers }
+          ),
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/activities",
+            { headers }
+          ),
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/all-transactions",
+            { headers }
+          ),
+          fetch(
+            "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/all-user",
+            { headers }
+          ),
+        ]);
+
+        const banners = await bannersRes.json();
+        const promos = await promosRes.json();
+        const categories = await categoriesRes.json();
+        const activities = await activitiesRes.json();
+        const transactions = await transactionsRes.json();
+        const users = await usersRes.json();
+
+        const transaksiData = transactions.data || [];
+        const userData = users.data || [];
+
+        setStats({
+          banners: banners.data.length,
+          promos: promos.data.length,
+          categories: categories.data.length,
+          activities: activities.data.length,
+          transactions: transaksiData.length,
+          pending: transaksiData.filter((tx) => tx.status === "pending").length,
+          users: userData.filter((u) => u.role === "user").length,
+          admins: userData.filter((u) => u.role === "admin").length,
+        });
+      } catch (error) {
+        console.error("Gagal mengambil data dashboard:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg p-4 hidden md:block">
-        <div className="flex items-center gap-2 text-2xl font-bold text-orange-600 mb-10">
-          <span>🧡</span> M.
-        </div>
-
-        <nav className="space-y-2 text-sm font-medium text-gray-700">
-          <SidebarItem
-            icon={<LayoutDashboard size={16} />}
-            label="Dashboard"
-            active
-          />
-          <SidebarItem icon={<Image size={16} />} label="Data Banner" />
-          <SidebarItem icon={<Tag size={16} />} label="Data Promo" />
-          <SidebarItem
-            icon={<LayoutDashboard size={16} />}
-            label="Data Category"
-          />
-          <SidebarItem icon={<MapPin size={16} />} label="Data Activity" />
-          <SidebarItem
-            icon={<ShoppingCart size={16} />}
-            label="Data Transaksi"
-          />
-          <SidebarItem icon={<Users size={16} />} label="Data User" />
-        </nav>
-
-        <div className="absolute bottom-4 left-4 flex items-center gap-2 text-xs text-gray-600">
-          <img
-            src="https://ui-avatars.com/api/?name=testes"
-            alt="avatar"
-            className="w-6 h-6 rounded-full"
-          />
-          <div>
-            <div className="font-semibold">testes</div>
-            <div className="text-[10px]">testestes@gmail.com</div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 p-6">
-        {/* Breadcrumb */}
-        <div className="text-sm text-gray-500 flex items-center mb-4 gap-1">
-          <Link href="/" className="text-gray-700">
-            🏠 Home
-          </Link>
-          <ChevronRight size={14} />
-          <span className="text-gray-700">Dashboard</span>
-        </div>
-
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          <StatCard
-            icon={<Image className="w-5 h-5 text-gray-500" />}
-            label="Total Banner"
-            value="11"
-          />
-          <StatCard
-            icon={<Tag className="w-5 h-5 text-gray-500" />}
-            label="Total Promo"
-            value="10"
-          />
-          <StatCard
-            icon={<LayoutDashboard className="w-5 h-5 text-gray-500" />}
-            label="Total Category"
-            value="25"
-          />
-          <StatCard
-            icon={<MapPin className="w-5 h-5 text-gray-500" />}
-            label="Total Activity"
-            value="30"
-          />
-          <StatCard
-            icon={<ShoppingCart className="w-5 h-5 text-gray-500" />}
-            label="Total Transaksi"
-            value="567"
-          />
-          <StatCard
-            icon={<Info className="w-5 h-5 text-gray-500" />}
-            label="Perlu Konfirmasi"
-            value="245"
-          />
-          <StatCard
-            icon={<Users className="w-5 h-5 text-gray-500" />}
-            label="Total User"
-            value="378"
-          />
-          <StatCard
-            icon={<Settings className="w-5 h-5 text-gray-500" />}
-            label="Total Admin"
-            value="312"
-          />
-        </div>
-      </main>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <StatCard
+        label="Total Banners"
+        value={stats.banners}
+        color="bg-fuchsia-100"
+      />
+      <StatCard
+        label="Total Promos"
+        value={stats.promos}
+        color="bg-fuchsia-100"
+      />
+      <StatCard
+        label="Total Categories"
+        value={stats.categories}
+        color="bg-fuchsia-100"
+      />
+      <StatCard
+        label="Total Activities"
+        value={stats.activities}
+        color="bg-fuchsia-100"
+      />
+      <StatCard
+        label="Total Transaksi"
+        value={stats.transactions}
+        color="bg-fuchsia-100"
+      />
+      <StatCard
+        label="Perlu Konfirmasi"
+        value={stats.pending}
+        color="bg-fuchsia-100"
+      />
+      <StatCard label="Total User" value={stats.users} color="bg-fuchsia-100" />
+      <StatCard
+        label="Total Admin"
+        value={stats.admins}
+        color="bg-fuchsia-100"
+      />
     </div>
   );
 }
 
-function SidebarItem({ icon, label, active }) {
+function StatCard({ label, value, color }) {
   return (
-    <div
-      className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 ${
-        active ? "bg-orange-50 text-orange-600 font-semibold" : ""
-      }`}
-    >
-      {icon}
-      {label}
-    </div>
-  );
-}
-
-function StatCard({ icon, label, value }) {
-  return (
-    <div className="bg-white rounded-md p-4 shadow-sm border flex justify-between items-center">
-      <div>
-        <div className="text-sm text-gray-500">{label}</div>
-        <div className="text-2xl font-semibold text-gray-800">{value}</div>
+    <div className={`rounded-lg p-4 ${color} shadow-sm`}>
+      <div className="text-sm text-gray-600">{label}</div>
+      <div className="text-3xl font-bold text-gray-800 mb-2">{value}</div>
+      <div className="h-2 bg-white/30 rounded-full overflow-hidden">
+        <div className="h-full bg-white w-2/3 rounded-full"></div>
       </div>
-      <div className="bg-gray-100 rounded-full p-2">{icon}</div>
     </div>
   );
 }
