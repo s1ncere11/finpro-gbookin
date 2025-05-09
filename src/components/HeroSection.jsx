@@ -7,6 +7,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import PromoSlider from "./PromoSlider";
 import CategorySlider from "@/components/CategorySlider";
 import { useRouter } from "next/navigation";
+import Banner from "./Banner";
+import DownloadBanner from "@/components/DownloadBanner";
 
 export default function HeroSection() {
   const router = useRouter(); // Hook untuk navigasi
@@ -152,9 +154,10 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-
       <PromoSlider />
+      <Banner />
       <CategorySlider />
+      <DownloadBanner />
     </>
   );
 }

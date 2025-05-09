@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default function Banner() {
   const [banners, setBanners] = useState([]);
@@ -12,7 +16,7 @@ export default function Banner() {
           "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/banners",
           {
             headers: {
-              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c", // ganti dengan API key asli kamu
+              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
             },
           }
         );
@@ -27,22 +31,36 @@ export default function Banner() {
   }, []);
 
   return (
-    <div className="flex gap-4 overflow-x-auto p-4">
-      {Array.isArray(banners) &&
-        banners.map((banner: any) => (
-          <div
-            key={banner.id}
-            className="min-w-[300px] bg-white shadow-md rounded-md p-4"
-          >
-            <img
-              src={banner.imageUrl}
-              alt={banner.name}
-              className="w-full h-40 object-cover rounded-md"
-            />
-            <h3 className="mt-2 text-lg font-semibold">{banner.name}</h3>
-            <p className="text-sm text-gray-600">{banner.description}</p>
-          </div>
+    <div className="w-full  py-6 mt-10">
+      <h2 className="text-xl md:text-2xl font-bold text-fuchsia-700 mb-4">
+        Temukan kejutan dan destinasi baru yang siap kamu jelajahi!
+      </h2>
+
+      <Swiper
+        modules={[Autoplay, Pagination]}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        loop={true}
+        pagination={{ clickable: true }}
+        slidesPerView={1}
+        className="rounded-2xl"
+        style={{
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          boxShadow: "0px 3px 6px rgba(255, 0, 255, 0.4)",
+        }}
+      >
+        {banners.map((banner: any) => (
+          <SwiperSlide key={banner.id}>
+            <div className="w-full shadow-lg rounded-xl ">
+              <img
+                src={banner.imageUrl}
+                alt={banner.name}
+                className="w-full h-[250px] sm:h-[350px] object-cover"
+              />
+            </div>
+          </SwiperSlide>
         ))}
+      </Swiper>
     </div>
   );
 }

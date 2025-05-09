@@ -229,9 +229,13 @@ export default function CartOrders() {
 
         {/* Left Side: Orders */}
         <div className="md:w-3/3">
-          <h2 className="text-3xl font-bold text-fuchsia-800 mb-8 flex items-center gap-2">
-            <FaFile className="text-2xl" />
-            Your Orders
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-800 via-pink-700 to-red-600 mb-8 flex items-center gap-4">
+            <span className="p-3 bg-fuchsia-100 text-fuchsia-800 rounded-full shadow-md animate-pulse">
+              <FaFile className="text-2xl" />
+            </span>
+            <span className="border-b-4 border-fuchsia-800 pb-1">
+              Your Orders
+            </span>
           </h2>
 
           {/* Tabs */}

@@ -210,10 +210,10 @@ export default function TransactionDetailPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-1 py-10 mt-4">
+    <div className="max-w-7xl mx-auto px-4 md:px-1 py-10 mt-14">
       <Link
         href="/cartorders"
-        className="text-sm text-fuchsia-600 hover:underline flex items-center gap-2 mb-6"
+        className="text-sm text-fuchsia-800 hover:underline flex items-center gap-2 mb-6"
       >
         <FaArrowLeft /> Kembali ke Daftar Pesanan
       </Link>
@@ -234,8 +234,14 @@ export default function TransactionDetailPage() {
         <div className="p-6 flex flex-col md:flex-row gap-6">
           <img
             src={item?.imageUrls?.[0] || "/catbg.jpg"}
-            alt={item?.title}
+            alt={item?.title || "Activity Image"}
             className="w-full md:w-60 h-60 object-cover rounded-lg border"
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              if (target.src !== window.location.origin + "/catbg.jpg") {
+                target.src = "/catbg.jpg";
+              }
+            }}
           />
 
           <div className="flex-1 space-y-4">
@@ -280,7 +286,7 @@ export default function TransactionDetailPage() {
                       alt={paymentMethod.name}
                       className="w-5 h-5 object-contain"
                     />
-                    <span>Bank {paymentMethod.name}</span>
+                    <span>Virtual Account {paymentMethod.name}</span>
                   </div>
 
                   <div className="relative">
@@ -357,7 +363,7 @@ export default function TransactionDetailPage() {
                   "w-full py-2 px-4 rounded-xl transition",
                   proofUploaded
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-fuchsia-600 text-white hover:bg-fuchsia-700"
+                    : "bg-fuchsia-800 text-white hover:bg-fuchsia-700"
                 )}
               >
                 Perbarui Transaksi

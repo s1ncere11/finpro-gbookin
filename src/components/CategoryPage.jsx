@@ -58,8 +58,8 @@ export default function CategoryPage({ onCategorySelect }) {
             onClick={() => handleCategoryClick(category.id)}
             className={`flex items-center gap-3 sm:gap-4 px-3 py-2 sm:px-4 sm:py-3 rounded-xl border-2 transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto ${
               selected === category.id
-                ? "bg-gradient-to-r from-purple-800 to-fuchsia-600 text-white border-fuchsia-800"
-                : "bg-white text-black border-transparent hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-500"
+                ? "bg-gradient-to-r from-purple-800 to-fuchsia-700 text-white border-fuchsia-800"
+                : "bg-white text-black border-transparent hover:bg-gradient-to-r hover:from-purple-800 hover:to-fuchsia-700 hover:text-white"
             }`}
           >
             {category.imageUrl ? (

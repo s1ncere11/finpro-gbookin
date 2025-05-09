@@ -13,6 +13,7 @@ import {
   Activity,
 } from "lucide-react";
 import Link from "next/link";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Dashboard",
@@ -22,6 +23,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-800">
       {/* Sidebar */}
+      <Toaster position="top-right" richColors closeButton />
       <aside className="w-60 bg-fuchsia-950 text-gray-100 p-6 flex flex-col">
         <Link href="/" className="text-xl font-bold text-white mb-12">
           G-Bookin

@@ -224,7 +224,13 @@ export default function CartPage() {
                     className="w-24 h-24 object-cover rounded-xl"
                     width={96}
                     height={96}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.onerror = null; // prevent infinite loop
+                      target.src = "/catbg.jpg"; // Ganti dengan path placeholder kamu
+                    }}
                   />
+
                   <div className="flex-1 space-y-1">
                     <div className="flex justify-between items-center">
                       <h3 className="text-lg font-semibold">

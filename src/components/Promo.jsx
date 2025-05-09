@@ -69,7 +69,7 @@ export default function PromosPage() {
         <input
           type="text"
           placeholder="Cari promo Bali, Jepang, dll..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition duration-200"
+          className="w-full pl-10 pr-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -85,7 +85,7 @@ export default function PromosPage() {
               className="group relative bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform transition duration-300 hover:scale-[1.03]"
             >
               {/* Gambar + Hover Effect */}
-              <div className="relative h-48 w-full overflow-hidden">
+              <div className="relative aspect-[3/2] w-full overflow-hidden rounded-t-2xl">
                 <img
                   src={
                     promo.imageUrl && promo.imageUrl.trim() !== ""
@@ -137,7 +137,7 @@ export default function PromosPage() {
 
       {/* Modal */}
       {selectedPromo && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-2 md:px-4 py-6 overflow-y-auto">
           <div className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl animate-fadeIn grid grid-cols-1 md:grid-cols-2">
             {/* Gambar di kiri */}
             <div className="relative">
@@ -167,7 +167,7 @@ export default function PromosPage() {
             </div>
 
             {/* Konten di kanan */}
-            <div className="p-6 flex flex-col justify-between relative">
+            <div className="p-4 sm:p-6 flex flex-col justify-between relative max-w-full">
               <div>
                 <h2 className="text-2xl font-bold text-fuchsia-700 mb-2">
                   🎉 {selectedPromo.title}

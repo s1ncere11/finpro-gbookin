@@ -17,6 +17,77 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
+  // Tambahan state dan useEffect untuk fetch cart count
+  const [cartCount, setCartCount] = useState(0);
+  const [userImage, setUserImage] = useState("/catbg.jpg");
+  const [user, setUser] = useState<{
+    name?: string;
+    email?: string;
+    profilePictureUrl?: string;
+  }>({});
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(
+          "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/user",
+          {
+            headers: {
+              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+        if (res.ok && data?.data) {
+          setUser({
+            name: data.data.name,
+            email: data.data.email,
+            profilePictureUrl: data.data.profilePictureUrl,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(
+          "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/carts",
+          {
+            headers: {
+              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+        if (res.ok) {
+          setCartCount(data?.data?.length || 0);
+        } else {
+          console.error("Failed to fetch cart data", data);
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    };
+
+    fetchCart();
+  }, [isLoggedIn]);
+
   const handleClickCart = (e: React.MouseEvent) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -52,8 +123,12 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-md w-full z-50 fixed top-0 left-0 min-h-[72px]">
       <div className="px-6 md:px-1 py-4 max-w-7xl mx-auto flex justify-between items-center font-sans">
-        <Link href="/" className="text-2xl font-bold text-fuchsia-600">
-          G-Bookin
+        <Link
+          href="/"
+          className="flex items-center  text-2xl font-bold text-fuchsia-600"
+        >
+          <img src="/logo.png" alt="Logo" width={32} height={32} />
+          Bookin
         </Link>
 
         <div className="hidden md:flex gap-6 text-black text-sm font-semibold">
@@ -66,7 +141,7 @@ export default function Navbar() {
           <Link className="hover:text-fuchsia-600" href="/promo">
             Promo
           </Link>
-          <Link className="hover:text-fuchsia-600" href="/activity">
+          <Link className="hover:text-fuchsia-600" href="/">
             Blog
           </Link>
         </div>
@@ -75,18 +150,27 @@ export default function Navbar() {
           <Link
             href="/cart"
             onClick={handleClickCart}
-            className="text-gray-700 font-semibold hover:text-fuchsia-800 px-3 py-2"
+            className="relative text-gray-700 font-semibold hover:text-fuchsia-800 px-3 py-2"
           >
             <FaCartPlus className="text-2xl" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
           {isLoggedIn ? (
             <div className="relative group">
               <button className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center focus:outline-none">
                 <img
-                  src="/catbg.jpg" // Ganti sesuai URL avatar jika tersedia
+                  src={user.profilePictureUrl || "/catbg.jpg"}
                   alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full border-fuchsia-800 border-2 object-cover"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/catbg.jpg";
+                  }}
                 />
               </button>
 
@@ -180,27 +264,36 @@ export default function Navbar() {
           </Link>
           <Link
             className="block hover:text-fuchsia-500"
-            href="/activity"
+            href="/"
             onClick={() => setMenuOpen(false)}
           >
             Blog
           </Link>
           <hr />
           <Link
-            className="block hover:text-fuchsia-500"
+            className="relative block hover:text-fuchsia-500"
             href="/cart"
             onClick={() => setMenuOpen(false)}
           >
-            <FaCartPlus />
+            <FaCartPlus className="text-2xl" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 left-5 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
           {isLoggedIn ? (
             <div className="relative group">
               <button className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center focus:outline-none">
                 <img
-                  src="/default-avatar.png" // Ganti sesuai URL avatar jika tersedia
+                  src={user.profilePictureUrl || "/catbg.jpg"}
                   alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-10 h-10 border-fuchsia-700 rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/catbg.jpg";
+                  }}
                 />
               </button>
 

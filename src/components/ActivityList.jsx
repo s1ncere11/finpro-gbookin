@@ -97,7 +97,7 @@ export default function ActivityList({ selectedCategory }) {
                   IDR {new Intl.NumberFormat("id-ID").format(activity.price)}
                 </p>
                 <button
-                  className="px-6 py-2 bg-fuchsia-700 text-white rounded-full shadow-md hover:cursor-pointer hover:bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:shadow-xl transition duration-300"
+                  className="px-6 py-2 bg-fuchsia-800 text-white rounded-full shadow-md hover:cursor-pointer hover:bg-gradient-to-r from-purple-800 to-fuchsia-700 hover:shadow-xl transition duration-300"
                   onClick={() => handleViewTrip(activity)}
                 >
                   View Trip
