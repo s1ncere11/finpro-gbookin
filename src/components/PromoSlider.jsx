@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
 
 export default function PromoSlider() {
   const [promos, setPromos] = useState([]);
@@ -69,7 +70,30 @@ export default function PromoSlider() {
   const handleNext = () => instanceRef.current?.next();
   const handlePrev = () => instanceRef.current?.prev();
 
-  if (loading) return <div className="text-center my-10">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="w-full py-10 mt-10 rounded-xl bg-slate-100">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-4">
+            <Skeleton width={100} height={18} />
+            <Skeleton width={100} height={18} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white p-3 rounded-2xl shadow-md">
+                <Skeleton height={200} />
+                <div className="py-16 space-y-2">
+                  <Skeleton height={100} width={`80%`} />
+                  <Skeleton height={100} width={`90%`} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
@@ -100,17 +124,19 @@ export default function PromoSlider() {
                 className="keen-slider__slide bg-white rounded-2xl shadow-md overflow-hidden "
               >
                 <div className="relative h-[200px] sm:h-[240px] w-full">
-                  {promo.imageUrl ? (
-                    <img
-                      src={promo.imageUrl}
-                      alt={promo.title}
-                      className="w-full h-full object-cover hover:scale-105 transition"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
-                      No Image
-                    </div>
-                  )}
+                  <img
+                    src={
+                      promo.imageUrl && promo.imageUrl.trim() !== ""
+                        ? promo.imageUrl
+                        : "/catbg.jpg"
+                    }
+                    alt={promo.title || "Promo Image"}
+                    className="w-full h-full object-cover transition-all duration-500 hover:scale-105"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/catbg.jpg";
+                    }}
+                  />
 
                   <span className="absolute top-2 left-2 bg-fuchsia-600 text-white text-xs font-bold px-4 py-2 rounded">
                     15% OFF

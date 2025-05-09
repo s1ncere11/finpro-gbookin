@@ -17,6 +17,14 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
+  const handleClickCart = (e: React.MouseEvent) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      e.preventDefault(); // Batalkan navigasi
+      router.push("/login"); // Redirect ke login
+    }
+  };
+
   // Cek status login saat pertama kali render
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,16 +73,18 @@ export default function Navbar() {
 
         <div className="hidden md:flex gap-2 items-center">
           <Link
-            href="/cek-order"
-            className="text-sm text-gray-700 font-semibold hover:text-fuchsia-600"
+            href="/cart"
+            onClick={handleClickCart}
+            className="text-gray-700 font-semibold hover:text-fuchsia-800 px-3 py-2"
           >
-            Cek Order
+            <FaCartPlus className="text-2xl" />
           </Link>
+
           {isLoggedIn ? (
             <div className="relative group">
               <button className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center focus:outline-none">
                 <img
-                  src="/default-avatar.png" // Ganti sesuai URL avatar jika tersedia
+                  src="/catbg.jpg" // Ganti sesuai URL avatar jika tersedia
                   alt="Profile"
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -91,15 +101,7 @@ export default function Navbar() {
                       <FaPerson /> Profile
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      href="/my-orders"
-                      className="flex justify-start gap-3 items-center px-4 py-2 hover:bg-gray-100"
-                    >
-                      <FaCartPlus />
-                      My Orders
-                    </Link>
-                  </li>
+
                   <li>
                     <Link
                       href="/dashboard"
@@ -121,10 +123,16 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login" className="...">
+              <Link
+                href="/login"
+                className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-fuchsia-700 border border-fuchsia-700 rounded-lg hover:bg-fuchsia-700 hover:text-white transition-colors duration-200 text-center"
+              >
                 Masuk
               </Link>
-              <Link href="/register" className="...">
+              <Link
+                href="/register"
+                className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-fuchsia-700 rounded-lg hover:bg-fuchsia-800 transition-colors duration-200 text-center"
+              >
                 Daftar
               </Link>
             </>
@@ -143,28 +151,28 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white w-full px-6 pb-4 space-y-3 text-sm font-semibold shadow-md absolute top-full left-0">
           <Link
-            className="block hover:text-yellow-500"
+            className="block hover:text-fuchsia-500"
             href="/"
             onClick={() => setMenuOpen(false)}
           >
             Beranda
           </Link>
           <Link
-            className="block hover:text-yellow-500"
+            className="block hover:text-fuchsia-500"
             href="/category"
             onClick={() => setMenuOpen(false)}
           >
             Category
           </Link>
           <Link
-            className="block hover:text-yellow-500"
+            className="block hover:text-fuchsia-500"
             href="/promo"
             onClick={() => setMenuOpen(false)}
           >
             Promo
           </Link>
           <Link
-            className="block hover:text-yellow-500"
+            className="block hover:text-fuchsia-500"
             href="/activity"
             onClick={() => setMenuOpen(false)}
           >
@@ -172,11 +180,11 @@ export default function Navbar() {
           </Link>
           <hr />
           <Link
-            className="block hover:text-yellow-500"
-            href="/cek-order"
+            className="block hover:text-fuchsia-500"
+            href="/cart"
             onClick={() => setMenuOpen(false)}
           >
-            Cek Order
+            <FaCartPlus />
           </Link>
 
           {isLoggedIn ? (
@@ -233,10 +241,16 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login" className="...">
+              <Link
+                href="/login"
+                className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-fuchsia-700 border border-fuchsia-700 rounded-lg hover:bg-fuchsia-700 hover:text-white transition-colors duration-200 text-center"
+              >
                 Masuk
               </Link>
-              <Link href="/register" className="...">
+              <Link
+                href="/register"
+                className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-fuchsia-700 rounded-lg hover:bg-fuchsia-800 transition-colors duration-200 text-center"
+              >
                 Daftar
               </Link>
             </>

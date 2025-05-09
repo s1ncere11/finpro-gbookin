@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Ambil nilai redirect dari query (?redirect=/promo/xyz), default ke "/"
+  const redirectPath = searchParams.get("redirect") || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +40,8 @@ export default function LoginPage() {
         localStorage.setItem("token", result.token);
         localStorage.setItem("user", JSON.stringify(result.data));
 
-        router.push("/");
+        // ✅ Redirect ke halaman sebelumnya (atau home jika tidak ada redirect)
+        router.push(redirectPath);
       } else {
         setError(result.message || "Login gagal");
       }

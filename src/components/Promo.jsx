@@ -86,17 +86,19 @@ export default function PromosPage() {
             >
               {/* Gambar + Hover Effect */}
               <div className="relative h-48 w-full overflow-hidden">
-                {promo.imageUrl ? (
-                  <img
-                    src={promo.imageUrl}
-                    alt={promo.title}
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                    No Image
-                  </div>
-                )}
+                <img
+                  src={
+                    promo.imageUrl && promo.imageUrl.trim() !== ""
+                      ? promo.imageUrl
+                      : "/catbg.jpg"
+                  }
+                  alt={promo.title || "Promo Image"}
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/catbg.jpg";
+                  }}
+                />
 
                 {/* Badge Diskon */}
                 <span className="absolute top-3 left-3 bg-fuchsia-700 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
@@ -140,10 +142,19 @@ export default function PromosPage() {
             {/* Gambar di kiri */}
             <div className="relative">
               <img
-                src={selectedPromo.imageUrl}
-                alt={selectedPromo.title}
-                className="w-full h-full object-cover"
+                src={
+                  selectedPromo.imageUrl && selectedPromo.imageUrl.trim() !== ""
+                    ? selectedPromo.imageUrl
+                    : "/catbg.jpg"
+                }
+                alt={selectedPromo.title || "Promo Image"}
+                className="w-full h-full object-cover rounded-lg"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/catbg.jpg";
+                }}
               />
+
               <button
                 onClick={() => setSelectedPromo(null)}
                 className="absolute top-3 right-3 bg-white hover:bg-fuchsia-700 hover:cursor-pointer bg-opacity-80 hover:bg-opacity-100 text-gray-700 hover:text-red-500 p-2 rounded-full shadow transition"

@@ -138,9 +138,11 @@ export default function PromoPage() {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Promo Management</h1>
+    <div className="px-6 py-10 bg-fuchsia-50 min-h-screen">
+      <div className="flex justify-between items-center  ">
+        <h1 className="text-4xl font-bold text-fuchsia-700 mb-2">
+          Promos Data
+        </h1>
         <button
           onClick={() => {
             setForm({ id: "", title: "", promo_code: "", image: null });
@@ -151,13 +153,16 @@ export default function PromoPage() {
           <Plus size={16} /> Add Promo
         </button>
       </div>
+      <p className="mb-5 text-gray-500">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      </p>
 
       <input
         type="text"
         placeholder="Search..."
-        className="border px-3 py-2 rounded w-64 mb-4"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        className="   px-3 py-2 rounded-xl w-64 mb-4 p-3 border border-fuchsia-300 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 "
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -166,7 +171,7 @@ export default function PromoPage() {
           .map((promo) => (
             <div
               key={promo.id}
-              className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col"
+              className="bg-white rounded-2xl shadow-[0_8px_12px_-2px_rgba(190,24,93,0.3)] overflow-hidden flex flex-col"
             >
               {promo.imageUrl ? (
                 <img
@@ -337,7 +342,7 @@ export default function PromoPage() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+                className="px-4 py-2 bg-fuchsia-700 text-white rounded-lg hover:bg-fuchsia-600"
               >
                 {form.id ? "Update" : "Create"}
               </button>

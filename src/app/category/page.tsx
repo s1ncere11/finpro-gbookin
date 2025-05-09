@@ -37,7 +37,7 @@ export default function Category() {
           </Link>
         </ol>
       </nav>
-      <h1 className="text-4xl font-extrabold text-fuchsia-600 mb-4 transform transition duration-300 hover:scale-105">
+      <h1 className="text-4xl font-extrabold text-fuchsia-700 mb-4 transform transition duration-300 hover:scale-105">
         Kamu mau kemana nih?
       </h1>
       <p className="mb-6 text-gray-600 font-medium text-lg leading-relaxed hover:text-gray-700 transition-colors">

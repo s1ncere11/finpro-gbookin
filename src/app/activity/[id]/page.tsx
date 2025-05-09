@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaArrowDown, FaArrowUp, FaHome } from "react-icons/fa";
 import { FaLocationCrosshairs } from "react-icons/fa6";
@@ -36,12 +36,13 @@ export default function ActivityDetail() {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleBookNow = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Silakan login terlebih dahulu.");
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 
@@ -135,7 +136,7 @@ export default function ActivityDetail() {
     return <div className="p-6 text-gray-500">Data tidak ditemukan</div>;
 
   return (
-    <div className="pb-40 mt-24 mx-72">
+    <div className="pb-40 mt-24 px-4 md:px-10 lg:px-20 xl:px-72">
       {/* Breadcrumb */}
       <div className="mx-auto px-7 mt-10">
         <nav className="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
@@ -161,12 +162,21 @@ export default function ActivityDetail() {
 
       {/* Hero Image */}
       <div className=" mx-auto px-7">
-        <div className="relative h-[60vh] rounded-3xl overflow-hidden shadow-xl">
+        <div className="relative h-[40vh] sm:h-[50vh] lg:h-[60vh] rounded-3xl overflow-hidden shadow-xl">
           <img
-            src={activity.imageUrls?.[0] || "/fallback.jpg"}
-            alt={activity.title}
+            src={
+              activity.imageUrls?.[0] && activity.imageUrls[0].trim() !== ""
+                ? activity.imageUrls[0]
+                : "/catbg.jpg"
+            }
+            alt={activity.title || "Activity Image"}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "/catbg.jpg";
+            }}
           />
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
           <div className="absolute bottom-6 left-6 z-20 text-white">
             <h1 className="text-3xl lg:text-4xl font-bold drop-shadow-lg">
@@ -270,7 +280,7 @@ export default function ActivityDetail() {
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="overflow-hidden mt-3 w-fit"
+                  className="overflow-hidden mt-3 object-cover md:w-fit"
                 >
                   <p className="mb-4 text-gray-700">
                     {activity.address}, {activity.city}, {activity.province}
@@ -402,7 +412,7 @@ export default function ActivityDetail() {
             <div className="flex flex-col gap-3 pt-4">
               <button
                 onClick={handleBookNow}
-                className="bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white py-3 rounded-xl font-semibold transition-all"
+                className="bg-gradient-to-r from-fuchsia-800 to-fuchsia-900 hover:from-fuchsia-700 hover:to-fuchsia-800 text-white py-3 rounded-xl font-semibold transition-all"
               >
                 Book Now
               </button>

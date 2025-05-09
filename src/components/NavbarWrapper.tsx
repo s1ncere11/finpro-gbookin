@@ -15,9 +15,12 @@ export default function NavbarWrapper() {
     `${dashboardPage}/promosdata`,
     `${dashboardPage}/activitiesdata`,
     `${dashboardPage}/transactionsdata`,
+    `${dashboardPage}/transactionsdata[id]`,
     `${dashboardPage}/usersdata`,
   ]; // halaman yang gak mau munculin navbar
-  const shouldHideNavbar = hideNavbarPaths.includes(pathname);
+  const shouldHideNavbar =
+    hideNavbarPaths.includes(pathname) ||
+    pathname.startsWith(`${dashboardPage}/transactionsdata/`);
 
   if (shouldHideNavbar) return null;
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Footer from "@/components/Footer";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
@@ -32,9 +33,15 @@ export default function CartPage() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingPayment, setLoadingPayment] = useState(true);
+  const router = useRouter();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
+  const handleClick = () => {
+    if (selectedItems.length > 0 && selectedPayment) {
+      router.push("/cartorders");
+    }
+  };
   const handleAddToCart = async (activityId: string) => {
     if (!token) return;
 
@@ -180,6 +187,41 @@ export default function CartPage() {
       </div>
     );
   }
+  const handleProceedToPayment = async () => {
+    if (!token || selectedItems.length === 0 || !selectedPayment) return;
+
+    try {
+      const res = await fetch(
+        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/create-transaction",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+          },
+          body: JSON.stringify({
+            cartIds: selectedItems, // ← Gunakan cart id yang dipilih
+            paymentMethodId: selectedPayment, // ← Karena ini ID langsung
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Error status:", res.status);
+        console.error("Error response:", data);
+        throw new Error(data.message || "Failed to create transaction");
+      }
+
+      console.log("Transaction success:", data);
+      router.push("/cartorders");
+    } catch (error) {
+      console.error("Error proceeding to payment:", error);
+      alert("Failed to proceed to payment. Please try again.");
+    }
+  };
 
   return (
     <div className=" px-4 md:px-8 mt-28 ">
@@ -221,7 +263,10 @@ export default function CartPage() {
                         {item.activity.title}
                       </h3>
                       <p className="text-fuchsia-700 font-bold">
-                        Rp{item.activity.price.toLocaleString("id-ID")}
+                        Rp
+                        {(item.activity.price * item.quantity).toLocaleString(
+                          "id-ID"
+                        )}
                       </p>
                     </div>
                     <p className="text-sm text-gray-500">
@@ -325,6 +370,7 @@ export default function CartPage() {
 
               <button
                 disabled={selectedItems.length === 0 || !selectedPayment}
+                onClick={handleProceedToPayment}
                 className={`w-full py-3 rounded-xl text-center font-semibold transition-all duration-200 ${
                   selectedItems.length > 0 && selectedPayment
                     ? "bg-fuchsia-700 text-white hover:bg-fuchsia-800"

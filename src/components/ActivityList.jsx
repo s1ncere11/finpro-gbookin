@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // ✅ pakai App Router
 import { FaSearch } from "react-icons/fa";
+import Footer from "./Footer";
 
 export default function ActivityList({ selectedCategory }) {
   const [activities, setActivities] = useState([]);
@@ -71,13 +72,13 @@ export default function ActivityList({ selectedCategory }) {
                 src={
                   activity.imageUrls[0] && activity.imageUrls[0].trim() !== ""
                     ? activity.imageUrls[0]
-                    : "/phdr.png"
+                    : "/catbg.jpg"
                 }
                 alt={activity.title}
                 className="w-full h-56 object-cover transition duration-300 transform hover:scale-110"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "/phdr.png";
+                  e.target.src = "/catbg.jpg";
                 }}
               />
             </div>
@@ -106,6 +107,7 @@ export default function ActivityList({ selectedCategory }) {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 }
