@@ -46,6 +46,7 @@ export default function LoginPage() {
         setError(result.message || "Login gagal");
       }
     } catch (err) {
+      console.error(err);
       setError("Terjadi kesalahan saat login");
     } finally {
       setLoading(false);

@@ -61,6 +61,7 @@ export default function RegisterPage() {
         setError(result.message || "Register gagal");
       }
     } catch (err) {
+      console.error(err);
       setError("Terjadi kesalahan saat register");
     } finally {
       setLoading(false);

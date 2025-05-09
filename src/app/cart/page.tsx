@@ -4,7 +4,6 @@ import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa6";
 
 type Activity = {
   id: string;
@@ -37,11 +36,6 @@ export default function CartPage() {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  const handleClick = () => {
-    if (selectedItems.length > 0 && selectedPayment) {
-      router.push("/cartorders");
-    }
-  };
   const handleAddToCart = async (activityId: string) => {
     if (!token) return;
 
@@ -94,6 +88,9 @@ export default function CartPage() {
     currentQty: number
   ) => {
     if (!token) return;
+    if (currentQty === 1) {
+      console.log("Item terakhir dihapus");
+    }
 
     try {
       await fetch(

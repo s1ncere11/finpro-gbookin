@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import {
-  FaCartPlus,
-  FaDatabase,
-  FaLeftLong,
-  FaPerson,
-  FaRightLong,
-} from "react-icons/fa6";
+import { FaCartPlus, FaDatabase, FaPerson, FaRightLong } from "react-icons/fa6";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);

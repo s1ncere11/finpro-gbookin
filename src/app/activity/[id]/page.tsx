@@ -121,6 +121,7 @@ export default function ActivityDetail() {
         const json = await res.json();
         setActivity(json.data);
       } catch (e) {
+        console.error(e); 
         setError("Gagal memuat aktivitas. Coba lagi nanti.");
       } finally {
         setLoading(false);
