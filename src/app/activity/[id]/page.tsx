@@ -8,6 +8,7 @@ import { FaLocationCrosshairs } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 interface Activity {
   id: string;
@@ -121,7 +122,7 @@ export default function ActivityDetail() {
         const json = await res.json();
         setActivity(json.data);
       } catch (e) {
-        console.error(e); 
+        console.error(e);
         setError("Gagal memuat aktivitas. Coba lagi nanti.");
       } finally {
         setLoading(false);
@@ -164,7 +165,7 @@ export default function ActivityDetail() {
       {/* Hero Image */}
       <div className=" mx-auto px-7">
         <div className="relative h-[40vh] sm:h-[50vh] lg:h-[60vh] rounded-3xl overflow-hidden shadow-xl">
-          <img
+          <Image
             src={
               activity.imageUrls?.[0] && activity.imageUrls[0].trim() !== ""
                 ? activity.imageUrls[0]

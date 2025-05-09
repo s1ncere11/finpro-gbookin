@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { FaCartPlus, FaDatabase, FaPerson, FaRightLong } from "react-icons/fa6";
+import {
+  FaCartFlatbed,
+  FaCartPlus,
+  FaDatabase,
+  FaPerson,
+  FaRightLong,
+} from "react-icons/fa6";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -95,7 +101,14 @@ export default function Navbar() {
                       <FaPerson /> Profile
                     </Link>
                   </li>
-
+                  <li>
+                    <Link
+                      href="/cartorders"
+                      className="flex justify-start gap-3 items-center px-4 py-2 hover:bg-gray-100"
+                    >
+                      <FaCartFlatbed /> Your Orders
+                    </Link>
+                  </li>
                   <li>
                     <Link
                       href="/dashboard"

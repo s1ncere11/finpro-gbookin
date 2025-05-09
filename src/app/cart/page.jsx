@@ -1,42 +1,23 @@
 "use client";
 
 import Footer from "@/components/Footer";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 
-type Activity = {
-  id: string;
-  title: string;
-  city: string;
-  imageUrl: string;
-  price: number;
-};
-
-type CartItemWithActivity = {
-  id: string;
-  quantity: number;
-  activity: Activity;
-};
-
-type PaymentMethod = {
-  id: string;
-  name: string;
-  imageUrl: string;
-};
-
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItemWithActivity[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingPayment, setLoadingPayment] = useState(true);
   const router = useRouter();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  const handleAddToCart = async (activityId: string) => {
+  const handleAddToCart = async (activityId) => {
     if (!token) return;
 
     try {
@@ -52,16 +33,13 @@ export default function CartPage() {
           body: JSON.stringify({ activityId }),
         }
       );
-      // Refresh cart
       await fetchCart();
     } catch (err) {
       console.error("Failed to add item:", err);
     }
   };
-  const handleDecreaseQuantity = async (
-    cartItemId: string,
-    currentQty: number
-  ) => {
+
+  const handleDecreaseQuantity = async (cartItemId, currentQty) => {
     if (!token || currentQty <= 1) return;
 
     try {
@@ -83,14 +61,8 @@ export default function CartPage() {
     }
   };
 
-  const handleRemoveFromCart = async (
-    cartItemId: string,
-    currentQty: number
-  ) => {
+  const handleRemoveFromCart = async (cartItemId, currentQty) => {
     if (!token) return;
-    if (currentQty === 1) {
-      console.log("Item terakhir dihapus");
-    }
 
     try {
       await fetch(
@@ -103,7 +75,6 @@ export default function CartPage() {
           },
         }
       );
-      // Refresh cart
       await fetchCart();
     } catch (err) {
       console.error("Failed to remove item:", err);
@@ -111,8 +82,6 @@ export default function CartPage() {
   };
 
   const fetchCart = async () => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (!token) return;
     try {
       const res = await fetch(
@@ -125,9 +94,9 @@ export default function CartPage() {
         }
       );
       const result = await res.json();
-      const rawCart: any[] = result.data;
+      const rawCart = result.data;
 
-      const cartWithActivity: CartItemWithActivity[] = rawCart.map((item) => ({
+      const cartWithActivity = rawCart.map((item) => ({
         id: item.id,
         quantity: item.quantity,
         activity: {
@@ -138,6 +107,7 @@ export default function CartPage() {
           price: item.activity.price,
         },
       }));
+
       setCartItems(cartWithActivity);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -177,13 +147,6 @@ export default function CartPage() {
     .filter((item) => selectedItems.includes(item.id))
     .reduce((total, item) => total + item.activity.price * item.quantity, 0);
 
-  if (loading || loadingPayment) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg font-medium">Loading...</p>
-      </div>
-    );
-  }
   const handleProceedToPayment = async () => {
     if (!token || selectedItems.length === 0 || !selectedPayment) return;
 
@@ -198,8 +161,8 @@ export default function CartPage() {
             apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
           },
           body: JSON.stringify({
-            cartIds: selectedItems, // ← Gunakan cart id yang dipilih
-            paymentMethodId: selectedPayment, // ← Karena ini ID langsung
+            cartIds: selectedItems,
+            paymentMethodId: selectedPayment,
           }),
         }
       );
@@ -212,7 +175,6 @@ export default function CartPage() {
         throw new Error(data.message || "Failed to create transaction");
       }
 
-      console.log("Transaction success:", data);
       router.push("/cartorders");
     } catch (error) {
       console.error("Error proceeding to payment:", error);
@@ -220,11 +182,18 @@ export default function CartPage() {
     }
   };
 
+  if (loading || loadingPayment) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg font-medium">Loading...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className=" px-4 md:px-8 mt-28 ">
-      <div className="max-w-7xl mx-auto ">
-        {/* HEADER DIPINDAH KE LUAR GRID */}
-        <h2 className="text-3xl font-bold mb-4 ">Your Cart</h2>
+    <div className="px-4 md:px-8 mt-28">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold mb-4">Your Cart</h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-36">
           {/* CART ITEMS */}
           <div className="lg:col-span-2 space-y-6">
@@ -253,6 +222,8 @@ export default function CartPage() {
                     src={item.activity.imageUrl}
                     alt={item.activity.title}
                     className="w-24 h-24 object-cover rounded-xl"
+                    width={96}
+                    height={96}
                   />
                   <div className="flex-1 space-y-1">
                     <div className="flex justify-between items-center">
@@ -260,7 +231,7 @@ export default function CartPage() {
                         {item.activity.title}
                       </h3>
                       <p className="text-fuchsia-700 font-bold">
-                        Rp
+                        Rp.
                         {(item.activity.price * item.quantity).toLocaleString(
                           "id-ID"
                         )}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { FaEdit, FaSearch } from "react-icons/fa";
+import Image from "next/image";
 
 interface User {
   id: string;
