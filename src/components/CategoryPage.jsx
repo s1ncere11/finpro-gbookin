@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// Komponen CategoryPage
 export default function CategoryPage({ onCategorySelect }) {
   const [categories, setCategories] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -52,12 +51,12 @@ export default function CategoryPage({ onCategorySelect }) {
 
   return (
     <div className="w-full max-w-7xl mx-auto">
-      <div className="min-h-[120px] flex flex-wrap justify-start gap-6">
+      <div className="min-h-[120px] flex flex-wrap justify-start gap-4 sm:gap-5 md:gap-6">
         {categories?.map((category) => (
           <button
             key={category.id}
             onClick={() => handleCategoryClick(category.id)}
-            className={`flex items-center gap-3 px-4 py-2 rounded-xl border-2 transition-all transform hover:scale-105 shadow-lg ${
+            className={`flex items-center gap-3 sm:gap-4 px-3 py-2 sm:px-4 sm:py-3 rounded-xl border-2 transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto ${
               selected === category.id
                 ? "bg-gradient-to-r from-purple-800 to-fuchsia-600 text-white border-fuchsia-800"
                 : "bg-white text-black border-transparent hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-500"
@@ -71,19 +70,19 @@ export default function CategoryPage({ onCategorySelect }) {
                     : "/catbg.jpg"
                 }
                 alt={category.name}
-                className="w-12 h-12 rounded-full object-cover"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "/catbg.jpg";
                 }}
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-300 flex items-center justify-center text-xs text-white">
                 N/A
               </div>
             )}
             <div className="text-left">
-              <p className="text-lg font-bold">{category.name}</p>
+              <p className="text-sm sm:text-base font-bold">{category.name}</p>
               <p className="text-xs opacity-80">Tours Available</p>
             </div>
           </button>
