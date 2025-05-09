@@ -19,6 +19,41 @@ export default function UsersData() {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [newRole, setNewRole] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdateRole = async () => {
+    if (!selectedUser) return;
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/update-user-role/${selectedUser.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ role: newRole }),
+        }
+      );
+
+      if (res.ok) {
+        await fetchUsers(); // refresh data
+        setShowModal(false);
+      } else {
+        const errorData = await res.json();
+        alert(`Gagal update: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error updating role", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -124,7 +159,14 @@ export default function UsersData() {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-center">
-                    <button className="bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-700 px-4 py-2 rounded-xl text-xs shadow transition-all">
+                    <button
+                      onClick={() => {
+                        setSelectedUser(user);
+                        setNewRole(user.role);
+                        setShowModal(true);
+                      }}
+                      className="bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-700 px-4 py-2 rounded-xl text-xs shadow transition-all"
+                    >
                       <FaEdit />
                     </button>
                   </td>
@@ -176,6 +218,43 @@ export default function UsersData() {
           </div>
         </div>
       </div>
+      {showModal && selectedUser && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+            <h2 className="text-xl font-bold text-fuchsia-700 mb-4">
+              Edit Role
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Ubah role untuk: <strong>{selectedUser.name}</strong>
+            </p>
+
+            <select
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+              className="w-full border border-fuchsia-300 rounded-xl px-4 py-2 mb-6 text-sm shadow focus:ring-2 focus:ring-fuchsia-600"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-sm bg-gray-200 rounded-xl hover:bg-gray-300 transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleUpdateRole}
+                disabled={loading}
+                className="px-4 py-2 text-sm bg-fuchsia-700 text-white rounded-xl hover:bg-fuchsia-800 transition disabled:opacity-50"
+              >
+                {loading ? "Menyimpan..." : "Simpan"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

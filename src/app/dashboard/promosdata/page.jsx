@@ -148,7 +148,7 @@ export default function PromoPage() {
             setForm({ id: "", title: "", promo_code: "", image: null });
             setShowForm(true);
           }}
-          className="bg-fuchsia-700 text-white px-4 py-2 rounded flex items-center gap-2"
+          className="bg-fuchsia-700 text-white px-4 py-2 rounded-xl flex items-center gap-2"
         >
           <Plus size={16} /> Add Promo
         </button>
@@ -165,13 +165,13 @@ export default function PromoPage() {
         className="   px-3 py-2 rounded-xl w-64 mb-4 p-3 border border-fuchsia-300 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 "
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
         {promos
           .filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
           .map((promo) => (
             <div
               key={promo.id}
-              className="bg-white rounded-2xl shadow-[0_8px_12px_-2px_rgba(190,24,93,0.3)] overflow-hidden flex flex-col"
+              className="bg-white rounded-2xl shadow-[0_8px_12px_-2px_rgba(190,24,93,0.3)] overflow-hidden flex flex-col transition-transform duration-300 hover:scale-[1.02]"
             >
               {promo.imageUrl ? (
                 <img
@@ -342,7 +342,7 @@ export default function PromoPage() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-fuchsia-700 text-white rounded-lg hover:bg-fuchsia-600"
+                className="px-4 py-2 bg-fuchsia-800 text-white rounded-lg hover:bg-fuchsia-700"
               >
                 {form.id ? "Update" : "Create"}
               </button>
